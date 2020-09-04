@@ -2,11 +2,12 @@
 """
 Main module
 Purpose:
-- saving sensor data
+- work with
 """
 
 import datetime
 import time
+
 import pymongo
 import sensor
 

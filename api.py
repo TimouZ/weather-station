@@ -49,11 +49,16 @@ def index():
     return 'This is index page'
 
 @app.route('/api/v1/sensor_data', methods=['GET'])
-def get_sensor_data():
+def get_sensor_data_list():
     sensor_data_list = []
     for x in mycol.find():
         sensor_data_list.append(x)
     return flask.jsonify({'sensor data list:': JSONEncoder().encode(sensor_data_list)})
 
+@app.route('/api/v1/sensor_data/<int:date>', methods=['GET'])
+def get_sensor_data_one(date):
+    query = 'date : {}'.format(date)
+    sensor_data_one = mycol.find(query)
+    return jsonify({'record:' get_sensor_data_one })
 if __name__ == '__main__':
     app.run(debug=True)

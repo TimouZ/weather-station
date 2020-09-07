@@ -1,53 +1,67 @@
+# -*- coding: utf-8 -*-
+"""
+
+"""
 import datetime
 from peewee import (Model, SqliteDatabase, DateField, FloatField, ForeignKeyField, datetime as peewee_datetime)
+from config import DATABASE_NAME
 
-database_name = 'weather_station.db'
-
-
-database = SqliteDatabase(database_name)  # Only for development
+database = SqliteDatabase(DATABASE_NAME)  # Only for development
 
 
-class BaseModel(Model):
+class _BaseModel(Model):
     class Meta:
         database = database
 
 
-class TemperatureLocal(BaseModel):
+class TemperatureLocal(_BaseModel):
+    """Table for storing temperature data from local source"""
+
     date = DateField(formats="%d-%m-%Y")
     temperature = FloatField()
     temperature_min = FloatField()
     temperature_max = FloatField()
 
 
-class PressureLocal(BaseModel):
+class PressureLocal(_BaseModel):
+    """Table for storing pressure data from local source"""
+
     date = DateField(formats="%d-%m-%Y")
     pressure = FloatField()
     pressure_min = FloatField()
     pressure_max = FloatField()
 
 
-class HumidityLocal(BaseModel):
+class HumidityLocal(_BaseModel):
+    """Table for storing humidity data from local source"""
+
     date = DateField(formats="%d-%m-%Y")
     humidity = FloatField()
     humidity_min = FloatField()
     humidity_max = FloatField()
 
 
-class TemperatureApi1(BaseModel):
+class TemperatureApi1(_BaseModel):
+    """Table for storing temperature data from remote API source"""
+
     date = DateField(formats="%d-%m-%Y")
     temperature = FloatField()
     temperature_min = FloatField()
     temperature_max = FloatField()
 
 
-class PressureApi1(BaseModel):
+class PressureApi1(_BaseModel):
+    """Table for storing pressure data from remote API source"""
+
     date = DateField(formats="%d-%m-%Y")
     pressure = FloatField()
     pressure_min = FloatField()
     pressure_max = FloatField()
 
 
-class HumidityApi1(BaseModel):
+class HumidityApi1(_BaseModel):
+    """Table for storing humidity data from remote API source"""
+
     date = DateField(formats="%d-%m-%Y")
     humidity = FloatField()
     humidity_min = FloatField()
@@ -57,7 +71,9 @@ class HumidityApi1(BaseModel):
         return self._data
 
 
-class WeatherStation(BaseModel):
+class WeatherStation(_BaseModel):
+    """Summary table for aggregating data from all sources"""
+
     date = DateField(formats="%d-%m-%Y")
     temperature_local = ForeignKeyField(TemperatureLocal)
     temperature_api1 = ForeignKeyField(TemperatureApi1)
@@ -66,10 +82,22 @@ class WeatherStation(BaseModel):
     humidity_local = ForeignKeyField(HumidityLocal)
     humidity_api1 = ForeignKeyField(HumidityApi1)
 
-
 def init_db():
+    """Tables creation and test data initiation function"""
     with database:
+        print("Drop tables...")
         database.drop_tables([TemperatureLocal, TemperatureApi1, PressureLocal,
                               PressureApi1, HumidityLocal, HumidityApi1, WeatherStation])
+        print("Done...")
+        print("Create tables...")
         database.create_tables([TemperatureLocal, TemperatureApi1, PressureLocal,
-                                PressureApi1, HumidityLocal, HumidityApi1, WeatherStation])
+                              PressureApi1, HumidityLocal, HumidityApi1, WeatherStation])
+        print("Done")
+        print("Adding test data")
+        TemperatureLocal.create(temperature=25.34, temperature_min=25.56, temperature_max=26.33)
+        PressureLocal.create(pressure=25.34, pressure_min=25.56, pressure_max=26.33)
+        HumidityLocal.create(humidity=25.34, humidity_min=25.56, humitiry_max=26.33)
+        TemperatureApi1.create(temperature=25.34, temperature_min=25.56, temperature_max=26.33)
+        PressureApi1.create(pressure=25.34, pressure_min=25.56, pressure_max=26.33)
+        HumidityApi1.create(humidity=25.34, humidity_min=25.56, humitiry_max=26.33)
+        print("Done")

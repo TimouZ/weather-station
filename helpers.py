@@ -1,8 +1,16 @@
 # -*- coding: utf-8 -*-
 import datetime
 import random
+
+import logging
+from logging.config import dictConfig
+
 from models import database
 from models import TemperatureLocal, TemperatureApi1, PressureLocal, PressureApi1, HumidityLocal, HumidityApi1
+import config
+
+dictConfig(config.LOGGING)
+log = logging.getLogger("mock")
 
 
 def generate_mock_data():
@@ -18,15 +26,15 @@ def generate_mock_date():
 def init_db():
     """Tables creation and test data initiation function"""
     with database:
-        print("Drop tables...")
+        log.info("Drop tables...")
         database.drop_tables([TemperatureLocal, TemperatureApi1, PressureLocal,
                               PressureApi1, HumidityLocal, HumidityApi1])
-        print("Done...")
-        print("Create tables...")
+        log.info("Done...")
+        log.info("Create tables...")
         database.create_tables([TemperatureLocal, TemperatureApi1, PressureLocal,
                                 PressureApi1, HumidityLocal, HumidityApi1])
-        print("Done")
-        print("Adding test data")
+        log.info("Done")
+        log.info("Adding test data")
         for test_data in range(40):
             for i in (TemperatureLocal, TemperatureApi1):
                 i.create(date_time=generate_mock_date(),

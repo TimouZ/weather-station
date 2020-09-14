@@ -1,10 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "common/base.html" %}
+{% block content %}
+    {% if not query_data %}
+    <h1>No data!</h1>
+    {% endif %}
+    <div>Local temperature data</div>
+    <table border="1">
+        <tr align="center">
+            <td>Date</td>
+            <td>Local temperature</td>
+            <td>Local temperature min</td>
+            <td>Local temperature max</td>
+        </tr>
+        {% for data in query_data %}
+        <tr align="center">
+            <td>{{ data.date_time }}</td>
+            <td>{{ data.temperature }}</td>
+            <td>{{ data.temperature_min }}</td>
+            <td>{{ data.temperature_max }}</td>
+         </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

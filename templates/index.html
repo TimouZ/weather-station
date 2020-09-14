@@ -3,21 +3,26 @@
     {% if not query_data %}
     <h1>No data!</h1>
     {% endif %}
-
+    <div>Summary temperature data</div>
     <table border="1">
-        <thead align="center">
-            <td>Date</td><td>Local Temperature</td><td>Local Temperature min</td><td>Local Temperature max</td>
-            <td>API Tempearture</td><td>API Tempearture min</td><td>API Tempearture max</td>
-        </thead>
+        <tr align="center">
+            <td>Date</td>
+            <td>Local temperature</td>
+            <td>Local temperature min</td>
+            <td>Local temperature max</td>
+            <td>API temperature</td>
+            <td>API temperature min</td>
+            <td>API temperature max</td>
+        </tr>
         {% for data in query_data %}
         <tr align="center">
-            <td>{{data.date_time}}</td>
-            <td>{{data.temperature}}</td>
-            <td>{{data.temperature_min}}</td>
-            <td>{{data.temperature_max}}</td>
-            <td>{{data.temp_api.temperature_max}}</td>
-            <td>{{data.temp_api.temperature_max}}</td>
-            <td>{{data.temp_api.temperature_max}}</td>
+            <td>{{ data.date_time }}</td>
+            <td>{{ data.temperature }}</td>
+            <td>{{ data.temperature_min }}</td>
+            <td>{{ data.temperature_max }}</td>
+            <td>{{ data.temp_api.temperature_max }}</td>
+            <td>{{ data.temp_api.temperature_max }}</td>
+            <td>{{ data.temp_api.temperature_max }}</td>
         </tr>
         {% endfor %}
     </table>

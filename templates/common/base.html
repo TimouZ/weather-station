@@ -1,0 +1,19 @@
+<html>
+<head>
+    {% if title %}
+    <title>{{ title }}</title>
+    {% else %}
+    <title>Weather app</title>
+    {% endif %}
+</head>
+    <body>
+    Weather station:
+    <div>
+        <a href="/index">Temperature summary</a>
+        <a href="/local_temperature">Local temperature</a>
+        <a href="/remote_temperature">Remote API temperature</a>
+    </div>
+    <hr>
+    {% block content %}{% endblock %}
+    </body>
+</html>

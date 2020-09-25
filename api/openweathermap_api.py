@@ -8,34 +8,21 @@ units	optional	Units of measurement. standard, metric and imperial units are ava
                     the units parameter, standard units will be applied by default.
 lang	optional	You can use this parameter to get the output in your language.
 """
-import abc
-
 import requests
 
 import config
+from api import _API
 
-class _API(abc.ABC):
-    # TODO: Move this class to package
-    def update_data(self):
-        # TODO: Add logging here
-
-    @abc.abstractmethod
-    def _update_data(self):
-        pass
 
 class API(_API):
     def _update_data(self):
         pass
 
-    def _get_openweathermap_data(self):
-    request_url = config.DevelopmentConfig.OPENWEATHERMAP_REQUEST_URL
-    request_query = request_url.format(
+    def get_openweathermap_api_data(self):
+        openweathermap_request_url_pattern = config.DevelopmentConfig.OPENWEATHERMAP_REQUEST_URL_PATTERN
+        openweathermap_request_url = openweathermap_request_url_pattern.format(
                     city_id=config.DevelopmentConfig.CITY_ID,
                     api_key=config.DevelopmentConfig.API_KEY
                     )
-    method = "get" # If you don't use the mode parameter format is JSON by default.
-
-    def make_request():
-        print(request_query)
-        return requests.request(method, request_query)
-
+        method = "get"  # If you don't use the mode parameter format is JSON by default.
+        self._send_request(openweathermap_request_url, method)

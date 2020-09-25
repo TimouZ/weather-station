@@ -2,7 +2,8 @@
 """Data models.
 """
 
-from peewee import (Model, SqliteDatabase, FloatField, DateTimeField)
+from peewee import (Model, SqliteDatabase, FloatField, DateTimeField, CharField,
+                    TextField, datetime as peewee_datetime)
 from config import DATABASE_NAME
 
 database = SqliteDatabase(DATABASE_NAME)  # Only for development
@@ -59,3 +60,29 @@ class HumidityApi1(_BaseModel):
     humidity = FloatField()
     humidity_min = FloatField()
     humidity_max = FloatField()
+
+
+class ApiLog(_BaseModel):
+    class Meta:
+        db_table = "api_logs"
+
+        request_url = CharField()
+        request_data = TextField(null=True)
+        request_method = CharField(max_length=100)
+        request_headers = TextField(null=True)
+        response_text = TextField(null=True)
+        created = DateTimeField(index=True, default=peewee_datetime.datetime.now)
+        finished = DateTimeField()
+        error = TextField(null=True)
+
+
+class ErrorLog(_BaseModel):
+    class Meta:
+        db_table = "error_logs"
+
+    request_data = TextField(null=True)
+    request_url = TextField()
+    request_method = CharField(max_length=100)
+    error = TextField()
+    traceback = TextField(null=True)
+    created = DateTimeField(index=True, default=peewee_datetime.datetime.now)

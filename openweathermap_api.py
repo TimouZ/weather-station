@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#!/usr/bin/env python3
+# !/usr/bin/env python3
 """Module provides receiving and processing data from a remote source"""
 
 import datetime
@@ -13,8 +13,10 @@ import models
 
 logging.config.dictConfig(config.LOGGING)
 
+
 class _API(abc.ABC):
     """Abstract base class for all APIs"""
+
     # TODO: move to package __init__
     def __init__(self, logger_name):
         self.log = logging.getLogger("api")
@@ -25,7 +27,7 @@ class _API(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def _parse_api_data(self):
+    def _parse_api_data(self, response_data):
         pass
 
     @abc.abstractmethod
@@ -67,6 +69,7 @@ class _API(abc.ABC):
         """
         return requests.request(method=method, url=url, headers=headers, data=data, timeout=config.HTTP_TIMEOUT)
 
+
 class API(_API):
     def __init__(self):
         super().__init__("Api")
@@ -88,9 +91,9 @@ class API(_API):
         """
         openweathermap_request_url_pattern = config.DevelopmentConfig.OPENWEATHERMAP_REQUEST_URL_PATTERN
         openweathermap_request_url = openweathermap_request_url_pattern.format(
-                    city_id=config.DevelopmentConfig.CITY_ID,
-                    api_key=config.DevelopmentConfig.API_KEY
-                    )
+            city_id=config.DevelopmentConfig.CITY_ID,
+            api_key=config.DevelopmentConfig.API_KEY
+        )
         method = "get"  # If you don't use the mode parameter format is JSON by default.
         openweathermap_api_data = self._send_request(openweathermap_request_url, method)
         openweathermap_api_data_json = openweathermap_api_data.json()
@@ -112,6 +115,12 @@ class API(_API):
                 data = d[1]
         return data
 
+    def update_db_data(self):
+        try:
+            self._update_data()
+        except Exception as e:
+            print("Can`t update data", e)
+
     def _update_data(self):
         """Updates data in database
 
@@ -121,6 +130,9 @@ class API(_API):
         Returns:
             Updates data in DB
         """
+
+        # TODO: add check for the existence of a current date record
+
         weather_data_dict = self._parse_api_data(self.get_api_data())
 
         temperature = models.TemperatureApi1(
@@ -128,14 +140,15 @@ class API(_API):
             temperature=weather_data_dict.get("temp", 0.0),
             temperature_min=weather_data_dict.get("temp_min", 0.0),
             temperature_max=weather_data_dict.get("temp_max", 0.0),
-            )
+        )
         temperature.save()
 
         humidity = models.HumidityApi1(humidity=weather_data_dict.get("humidity", 0.0))
-        humidity.save
+        humidity.save()
 
         pressure = models.PressureApi1(pressure=weather_data_dict.get("pressure", 0.0))
-        pressure.save
+        pressure.save()
+
 
 if __name__ == "__main__":
     API().get_api_data()

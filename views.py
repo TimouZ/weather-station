@@ -1,23 +1,39 @@
-from flask import render_template
+# -*- coding: utf-8 -*-
+
+from flask import render_template, url_for, redirect
 from weather_station import app
-from controllers import get_all_temperature_data, get_local_temperature_data, get_remote_api_temperature_data
+import controllers
 
 
 @app.route('/')
 @app.route("/index")
 def index():
-    query_data = get_all_temperature_data()
-    return render_template("index.html", query_data=query_data)
+    data = controllers.GetAllTemperatureData().call()
+    return render_template("index.html", context=data)
 
 
 @app.route("/local_temperature")
 def show_local_temperature_data():
-    query_data = get_local_temperature_data()
-    return render_template("local_temperature.html", query_data=query_data)
+    data = controllers.GetLocalTemperatureData().call()
+    return render_template("local_temperature.html", context=data)
 
 
 @app.route("/remote_temperature")
 def show_remote_temperature_data():
-    query_data = get_remote_api_temperature_data()
-    return render_template("remote_temperature.html", query_data=query_data)
+    data = controllers.GetRemoteAPITemperatureData().call()
+    return render_template("remote_temperature.html", context=data)
 
+
+@app.route("/update_latest")
+def update_latest():
+    controllers.UpdateLatest().call()
+    return redirect(url_for('show_remote_temperature_data'))
+
+
+
+
+
+@app.route("/test_data")
+def test_data():
+    data = controllers.GetRemoteAPITemperatureData().call()
+    return data

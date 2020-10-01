@@ -1,8 +1,9 @@
 {% extends "common/base.html" %}
 {% block content %}
-    {% if not query_data %}
+    {% if not context %}
     <h1>No data!</h1>
     {% endif %}
+<a href="/update_latest">Update current</a>
     <div>Remote API temperature data</div>
     <table border="1">
         <tr align="center">
@@ -11,7 +12,7 @@
             <td>API temperature min</td>
             <td>API temperature max</td>
         </tr>
-        {% for data in query_data %}
+        {% for data in context %}
         <tr align="center">
             <td>{{ data.date_time }}</td>
             <td>{{ data.temperature }}</td>
